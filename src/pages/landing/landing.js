@@ -224,7 +224,7 @@ class Movie extends React.Component {
 
           {this.state.loadfromurl ? (
             <div>
-              <h3>
+              <h3 className='sharetitle' >
                 {this.state.sharername
                   ? `${this.state.sharername} shared some cool movies with you`
                   : "Someone shared some cool movies with you"}{" "}
