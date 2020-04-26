@@ -84,21 +84,28 @@ class Movie extends React.Component {
       // var base64data = data[1];
       var decode = jwt.decode(data[1]);
 
-      console.log(decode);
+      if (decode) {
+        this.setState({ sharername: decode.name });
+        decode.imdbcodes.forEach((element) => {
+          fetch(`https://www.omdbapi.com/?i=${element}&apikey=4c3b0a9a`)
+            .then((res) => res.json())
+            .then((data) => {
+              console.log(data);
 
-      this.setState({ sharername: decode.name });
-
-      decode.imdbcodes.forEach((element) => {
-        fetch(`https://www.omdbapi.com/?i=${element}&apikey=4c3b0a9a`)
-          .then((res) => res.json())
-          .then((data) => {
-            console.log(data);
-
-            this.setState({
-              movies: [data, ...this.state.movies],
+              this.setState({
+                movies: [data, ...this.state.movies],
+              });
             });
-          });
-      });
+        });
+      } else {
+        this.setState({ loadfromurl: false   });
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "This link might have broken ",
+          // footer: "<a href>Why do I have this issue?</a>",
+        });
+      }
     }
 
     // if(this.props.)
@@ -217,14 +224,12 @@ class Movie extends React.Component {
 
         <div className="container">
           <div className="text-center titlediv">
-            <h2 className="center">
-              {/* Share your favourite movies  */}
-            </h2>
+            <h2 className="center">{/* Share your favourite movies  */}</h2>
           </div>
 
           {this.state.loadfromurl ? (
             <div>
-              <h3 className='sharetitle' >
+              <h3 className="sharetitle">
                 {this.state.sharername
                   ? `${this.state.sharername} shared some cool movies with you`
                   : "Someone shared some cool movies with you"}{" "}
