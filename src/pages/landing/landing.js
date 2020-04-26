@@ -205,6 +205,7 @@ class Movie extends React.Component {
             class="btn  my-2 my-sm-0 giticon"
             href="https://github.com/RizkyRajitha/movieshare"
             target="_blank"
+            rel="noopener noreferrer"
           >
             <img
               src="https://img.icons8.com/ios-filled/32/000000/github.png"
@@ -324,9 +325,27 @@ class Movie extends React.Component {
                 Share
               </button>
               <button
+                disabled={this.state.imdbcode.length > 0 ? false : true}
                 className="btn btn-success clearbutton"
                 onClick={() => {
-                  this.setState({ imdbcode: [], movies: [] });
+                  Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, Clear this list!",
+                  }).then((result) => {
+                    if (result.value) {
+                      this.setState({ imdbcode: [], movies: [] });
+                      Swal.fire(
+                        "Donezo !",
+                        "Your list is invisible now 😋",
+                        "success"
+                      );
+                    }
+                  });
                 }}
               >
                 Clear list
