@@ -201,7 +201,11 @@ class Movie extends React.Component {
             />
           </a>
 
-          <a class="btn  my-2 my-sm-0 giticon" href="" target="_blank">
+          <a
+            class="btn  my-2 my-sm-0 giticon"
+            href="https://github.com/RizkyRajitha/movieshare"
+            target="_blank"
+          >
             <img
               src="https://img.icons8.com/ios-filled/32/000000/github.png"
               alt="github"
