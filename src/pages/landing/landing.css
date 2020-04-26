@@ -1,0 +1,62 @@
+.search {
+  margin-top: 10%;
+  color: black;
+}
+
+.titlediv {
+  margin-top: 10%;
+}
+
+.cusotmemenu {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+}
+.cusotmemenu:hover {
+  background-color: yellow;
+}
+.customemenuitem1 {
+  padding-left: 1%;
+  padding-right: 10%;
+  flex-grow: 8;
+}
+
+.customemenuitem2 {
+  /* padding-left: 10%; */
+  padding-right: 10%;
+  /* flex-grow: 2; */
+}
+
+.customemenuitem3 {
+  /* padding-left: 10%; */
+  padding-right: 10%;
+  /* flex-grow: 2; */
+}
+
+.customemenuitem4 {
+  padding-left: 5%;
+  padding-right: 1%;
+  height: 100px;
+
+  /* flex-grow: 2; */
+}
+
+.cardcontainer {
+  margin-top: 6%;
+}
+
+.sharebutton {
+  float: right;
+  margin-top: 1%;
+}
+
+.clearbutton {
+  float: right;
+  margin-top: 1%;
+  margin-right: 1%;
+}
+
+
+.giticon{
+  cursor: pointer;
+}

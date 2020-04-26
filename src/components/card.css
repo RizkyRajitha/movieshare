@@ -1,0 +1,24 @@
+.poster {
+  height: 5%;
+}
+
+.imdbatag {
+  margin-top: -1%;
+  margin-right: 1%;
+  float: right;
+}
+
+.imdbratingbadge {
+  float: right;
+  margin-top: 1%;
+  margin-right: 1%;
+  font-size: 1.5rem;
+}
+
+.textfeilds {
+  font-size: 90% !important;
+}
+
+.cardbodaypad {
+  padding-bottom: 0.5rem;
+}
