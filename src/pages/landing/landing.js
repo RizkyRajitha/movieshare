@@ -217,7 +217,9 @@ class Movie extends React.Component {
 
         <div className="container">
           <div className="text-center titlediv">
-            {/* <h2 className="center">Movie app</h2> */}
+            <h2 className="center">
+              {/* Share your favourite movies  */}
+            </h2>
           </div>
 
           {this.state.loadfromurl ? (
