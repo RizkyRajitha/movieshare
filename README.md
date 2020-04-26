@@ -6,8 +6,15 @@
 ----
 
 
-
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+movie search powered by  [OMDB API](http://www.omdbapi.com/)
+
+icons [icon8](https://icons8.com/)
+
+----
+
+
 
 ## Available Scripts
 

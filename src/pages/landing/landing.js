@@ -98,7 +98,7 @@ class Movie extends React.Component {
             });
         });
       } else {
-        this.setState({ loadfromurl: false   });
+        this.setState({ loadfromurl: false });
         Swal.fire({
           icon: "error",
           title: "Oops...",
@@ -115,7 +115,7 @@ class Movie extends React.Component {
     console.log(selectedOption);
 
     this.setState({
-      selectedOption: selectedOption,
+      selectedOption: [{ label: "", value: 1 }],
       open: false,
     });
     // // this.setState({});
@@ -139,6 +139,7 @@ class Movie extends React.Component {
               this.setState({
                 movies: [data, ...this.state.movies],
                 imdbcode: [selectedOption.value, ...this.state.imdbcode],
+                selectedOption: [{ label: "", value: 1 }],
               });
             });
 
@@ -153,7 +154,11 @@ class Movie extends React.Component {
         .then((data) => {
           console.log(data);
 
-          this.setState({ movies: [data], imdbcode: [selectedOption.value] });
+          this.setState({
+            movies: [data],
+            imdbcode: [selectedOption.value],
+            selectedOption: [{ label: "", value: 1 }],
+          });
         });
     }
   };
