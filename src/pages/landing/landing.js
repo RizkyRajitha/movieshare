@@ -108,7 +108,7 @@ class Movie extends React.Component {
       }
     }
 
-    // if(this.props.)
+
   }
 
   handleChange = (selectedOption) => {
@@ -198,6 +198,22 @@ class Movie extends React.Component {
         callback(payload);
       })
       .catch((err) => console.log(err));
+  };
+
+  removemovie = (imdbid) => {
+    console.log(imdbid);
+
+    var indexc = this.state.imdbcode.indexOf(imdbid);
+
+    console.log(indexc);
+
+    let mm = [...this.state.movies];
+    let ii = [...this.state.imdbcode];
+
+    mm.splice(indexc, 1);
+    ii.splice(indexc, 1);
+
+    this.setState({ movies: mm, imdbcode: ii });
   };
 
   render() {
@@ -338,7 +354,7 @@ class Movie extends React.Component {
               </button>
               <button
                 disabled={this.state.imdbcode.length > 0 ? false : true}
-                className="btn btn-success clearbutton"
+                className="btn btn-warning clearbutton"
                 onClick={() => {
                   Swal.fire({
                     title: "Are you sure?",
@@ -364,7 +380,9 @@ class Movie extends React.Component {
               </button>
               <div className="container cardcontainer">
                 {this.state.movies.map((ele) => {
-                  return <Card data={ele} />;
+                  return (
+                    <Card data={ele} removemovieaction={this.removemovie} />
+                  );
                 })}
               </div>
             </>

@@ -1,5 +1,7 @@
 import React from "react";
 import "./card.css";
+import Swal from "sweetalert2";
+
 const Card = (props) => {
   console.log(props);
   return (
@@ -36,6 +38,33 @@ const Card = (props) => {
                 Language : {props.data.Language}
               </small>{" "} */}
             </div>{" "}
+            <button
+              // disabled={this.state.imdbcode.length > 0 ? false : true}
+              className="btn btn-danger imdbatag "
+              onClick={() => {
+                Swal.fire({
+                  title: "Are you sure?",
+                  text: "You won't be able to revert this!",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Yes, Remove this movie!",
+                }).then((result) => {
+                  if (result.value) {
+                    // this.setState({ imdbcode: [], movies: [] });
+                    props.removemovieaction(props.data.imdbID);
+                    Swal.fire(
+                      "Donezo !",
+                      "That wont't bother you anymore 😉",
+                      "success"
+                    );
+                  }
+                });
+              }}
+            >
+              Remove
+            </button>
             <a
               rel="noopener noreferrer"
               target="_blank"
