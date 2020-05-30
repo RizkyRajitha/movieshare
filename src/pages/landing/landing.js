@@ -11,9 +11,9 @@ import Axios from "axios";
 
 const api = "https://imdbmovieapp-e7c00.web.app/";
 
-const API = "http://localhost:9000";
+// const API = "http://localhost:9000";
 
-// const API = "https://movieshare.netlify.app/.netlify/functions";
+const API = "https://movieshare.netlify.app/.netlify/functions";
 
 // const API = 'http://localhost:9000/getmovielist'
 
