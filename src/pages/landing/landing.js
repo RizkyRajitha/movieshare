@@ -1,26 +1,34 @@
 import React from "react";
 import AsyncSelect from "react-select/async";
 import { components } from "react-select";
-import jwt from "jsonwebtoken";
+// import jwt from "jsonwebtoken";
 import _ from "lodash";
 import "./landing.css";
 import Card from "../../components/card";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
+import Axios from "axios";
+// import Swal from "sweetalert2";
 
 const api = "https://imdbmovieapp-e7c00.web.app/";
 
+const API = "http://localhost:9000";
+
+// const API = "https://movieshare.netlify.app/.netlify/functions";
+
+// const API = 'http://localhost:9000/getmovielist'
+
 const MenuList = (props) => {
-  console.log(props);
+  // console.log(props);
   return (
     <components.MenuList {...props}>
-      {console.log(props.options)}
+      {/* {console.log(props.options)} */}
       {props.options.length !== 0 ? (
         props.options.map((ele) => {
           return (
             <div
               className="cusotmemenu"
               onClick={(e) => {
-                console.log(ele.value);
+                // console.log(ele.value);
 
                 props.selectProps.onChange({
                   label: ele.label,
@@ -71,44 +79,44 @@ class Movie extends React.Component {
   }
 
   componentDidMount() {
-    console.log(window.location.href);
+    const token = localStorage.getItem("jwt");
 
-    var url = window.location.href;
+    const config = {
+      headers: { Authorization: token },
+    };
 
-    var data = url.split("?d");
+    // console.log(config);
 
-    console.log(data);
+    Axios.get(`${API}/getmovielist`, config)
+      .then((result) => {
+        console.log(result.data);
 
-    if (data.length > 1) {
-      this.setState({ loadfromurl: true });
-      // var base64data = data[1];
-      var decode = jwt.decode(data[1]);
+        result.data.data.forEach((element) => {
+          // console.log(element.fields);
 
-      if (decode) {
-        this.setState({ sharername: decode.name });
-        decode.imdbcodes.forEach((element) => {
-          fetch(`https://www.omdbapi.com/?i=${element}&apikey=4c3b0a9a`)
-            .then((res) => res.json())
-            .then((data) => {
-              console.log(data);
+          var temp = {
+            id: element.id,
+            Poster: element.fields.poster[0].url,
+            imdbRating: element.fields.imdbrating,
+            Title: element.fields.Name,
+            Plot: element.fields.plot,
+            Genre: element.fields.genre,
+            Year: element.fields.year,
+            Actors: element.fields.main_cast,
+            Director: element.fields.Directed_by,
+            imdbID: element.fields.imdb_link,
+          };
 
-              this.setState({
-                movies: [data, ...this.state.movies],
-              });
-            });
+          this.setState((pre) => {
+            return {
+              movies: [temp, ...pre.movies],
+            };
+          });
         });
-      } else {
-        this.setState({ loadfromurl: false });
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "This link might have broken ",
-          // footer: "<a href>Why do I have this issue?</a>",
-        });
-      }
-    }
-
-
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   handleChange = (selectedOption) => {
@@ -121,51 +129,93 @@ class Movie extends React.Component {
     // // this.setState({});
     // console.log(selectedOption);
 
-    if (this.state.movies.length) {
-      for (let index = 0; index < this.state.movies.length; index++) {
-        const element = this.state.movies[index];
+    var dups = true;
 
-        if (element.value === selectedOption.value) {
-          console.log("duplicates");
-          break;
-        } else {
-          fetch(
-            `https://www.omdbapi.com/?i=${selectedOption.value}&apikey=4c3b0a9a`
-          )
-            .then((res) => res.json())
-            .then((data) => {
-              console.log(data);
+    for (let index = 0; index < this.state.movies.length; index++) {
+      const element = this.state.movies[index];
 
-              this.setState({
-                movies: [data, ...this.state.movies],
-                imdbcode: [selectedOption.value, ...this.state.imdbcode],
-                selectedOption: [{ label: "", value: 1 }],
-              });
-            });
+      var eleid = element.imdbID.split("/").slice(-1)[0];
 
-          break;
-        }
+      console.log("ele id *******************************");
+      console.log(eleid);
+      console.log(selectedOption.value);
+      if (eleid === selectedOption.value) {
+        console.log("duplicates");
+        dups = false;
+        break;
       }
-    } else {
+    }
+
+    if (dups) {
       fetch(
         `https://www.omdbapi.com/?i=${selectedOption.value}&apikey=4c3b0a9a`
       )
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
+          // console.log(data);
 
-          this.setState({
-            movies: [data],
-            imdbcode: [selectedOption.value],
-            selectedOption: [{ label: "", value: 1 }],
-          });
+          const token = localStorage.getItem("jwt");
+
+          const config = {
+            headers: { Authorization: token },
+          };
+
+          var payload = {
+            Directed_by: data.Director,
+            Name: data.Title,
+            genre: data.Genre,
+            imdb_link: `https://www.imdb.com/title/${data.imdbID}`,
+            imdbrating: data.imdbRating,
+            main_cast: data.Actors,
+            plot: data.Plot,
+            poster: [{ url: data.Poster }],
+            type: data.Type,
+            year: data.Year,
+            language: data.Language,
+            runtime: data.Runtime,
+            country: data.Country,
+          };
+
+          Axios.post(`${API}/addnewmovie`, payload, config)
+            .then((result) => {
+              console.log("new movie ****************************************");
+              console.log(result.data);
+
+              var temp = {
+                id: result.data.data[0].id,
+                Poster: result.data.data[0].fields.poster[0].url,
+                imdbRating: result.data.data[0].fields.imdbrating,
+                Title: result.data.data[0].fields.Name,
+                Plot: result.data.data[0].fields.plot,
+                Genre: result.data.data[0].fields.genre,
+                Year: result.data.data[0].fields.year,
+                Actors: result.data.data[0].fields.main_cast,
+                Director: result.data.data[0].fields.Directed_by,
+                imdbID: result.data.data[0].fields.imdb_link,
+              };
+
+              this.setState((pre) => {
+                return {
+                  movies: [temp, ...pre.movies],
+                };
+              });
+
+              // this.setState({
+
+              //   imdbcode: [selectedOption.value, ...this.state.imdbcode],
+              //   selectedOption: [{ label: "", value: 1 }],
+              // });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         });
     }
   };
 
   getOptions = (inputValue, callback) => {
     this.setState({ open: true });
-    console.log("inputs - - " + inputValue);
+    // console.log("inputs - - " + inputValue);
     if (!inputValue) {
       return callback([{ label: "Nothing........", value: 1 }]);
     }
@@ -173,7 +223,7 @@ class Movie extends React.Component {
     fetch(`https://www.omdbapi.com/?s=${inputValue}&apikey=4c3b0a9a`)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
 
         var payload = [];
 
@@ -193,8 +243,8 @@ class Movie extends React.Component {
           // setsearchres({ label: "Err", value: 1 });
         }
         //   setsearchres(new Promise((res2) => res2(payload)));
-        console.log("resolve");
-        console.log(payload);
+        // console.log("resolve");
+        // console.log(payload);
         callback(payload);
       })
       .catch((err) => console.log(err));
@@ -203,17 +253,44 @@ class Movie extends React.Component {
   removemovie = (imdbid) => {
     console.log(imdbid);
 
-    var indexc = this.state.imdbcode.indexOf(imdbid);
+    const token = localStorage.getItem("jwt");
 
-    console.log(indexc);
+    const config = {
+      headers: { Authorization: token },
+    };
 
-    let mm = [...this.state.movies];
-    let ii = [...this.state.imdbcode];
+    var payload = {
+      id: imdbid,
+    };
 
-    mm.splice(indexc, 1);
-    ii.splice(indexc, 1);
+    Axios.post(`${API}/removemovie`, payload, config)
+      .then((result) => {
+        console.log(result.data);
 
-    this.setState({ movies: mm, imdbcode: ii });
+        if (result.data.data.deleted) {
+          console.log("de;eted ");
+
+          var mpped = this.state.movies.map((ele) => ele.id);
+
+          console.log(mpped);
+
+          var itemindex = mpped.indexOf(imdbid);
+          console.log(itemindex);
+          this.setState((pre) => {
+            var newmoveis = [...pre.movies];
+            newmoveis.splice(itemindex, 1);
+
+            return {
+              movies: newmoveis,
+            };
+          });
+
+          // Swal
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   render() {
@@ -248,145 +325,25 @@ class Movie extends React.Component {
             <h2 className="center">{/* Share your favourite movies  */}</h2>
           </div>
 
-          {this.state.loadfromurl ? (
-            <div>
-              <h3 className="sharetitle">
-                {this.state.sharername
-                  ? `${this.state.sharername} shared some cool movies with you`
-                  : "Someone shared some cool movies with you"}{" "}
-              </h3>
-              <a className="btn btn-success sharebutton" href={api}>
-                Make my own list
-              </a>
-              <div className="container cardcontainer">
-                {this.state.movies.map((ele) => {
-                  return <Card data={ele} />;
-                })}
-              </div>
+          <>
+            <AsyncSelect
+              className="search"
+              cacheOptions
+              value={this.state.selectedOption}
+              loadOptions={this.getOptions}
+              placeholder={"enter movie name"}
+              onChange={this.handleChange}
+              components={{ MenuList }}
+              defaultValue={this.state.selectedOption}
+              menuIsOpen={this.state.open}
+            />
+
+            <div className="container cardcontainer">
+              {this.state.movies.map((ele) => {
+                return <Card data={ele} removemovieaction={this.removemovie} />;
+              })}
             </div>
-          ) : (
-            <>
-              <AsyncSelect
-                className="search"
-                cacheOptions
-                value={this.state.selectedOption}
-                loadOptions={this.getOptions}
-                placeholder={"enter movie name"}
-                onChange={this.handleChange}
-                components={{ MenuList }}
-                defaultValue={this.state.selectedOption}
-                menuIsOpen={this.state.open}
-              />
-
-              <button
-                className="btn btn-success sharebutton"
-                disabled={this.state.imdbcode.length > 0 ? false : true}
-                onClick={() => {
-                  console.log(this.state.imdbcode);
-
-                  Swal.fire({
-                    title: "Pardon your name",
-                    input: "text",
-                    inputAttributes: {
-                      autocapitalize: "off",
-                    },
-                    // showCancelButton: true,
-                    confirmButtonText: "Share movie list",
-                    // showLoaderOnConfirm: true,
-                    preConfirm: (name) => {
-                      return new Promise((resolve) => {
-                        var payload = jwt.sign(
-                          JSON.stringify({
-                            name: name,
-                            imdbcodes: this.state.imdbcode,
-                          }),
-                          "123"
-                        );
-                        console.log(payload);
-                        var url = `${api}?d${payload}`;
-                        console.log(url);
-
-                        resolve(url);
-                      });
-                    },
-                    allowOutsideClick: () => !Swal.isLoading(),
-                  }).then((result) => {
-                    if (result.value) {
-                      console.log(result);
-                      Swal.fire({
-                        title: "Share file",
-                        input: "text",
-                        inputValue: result.value,
-                        showCancelButton: true,
-                        inputAttributes: {
-                          id: "sharefilelinkswaltectinput",
-                        },
-                        // text: " Error deleting file",
-                        html:
-                          '<button class="btn btn-primary" id="sharefilelinkswalcopybtn" >Copy link</button> ',
-                        icon: "success",
-                        confirmButtonText: "Cool",
-                      });
-                      var copysharebtnnn = document.getElementById(
-                        "sharefilelinkswalcopybtn"
-                      );
-                      copysharebtnnn.addEventListener("click", function () {
-                        // alert("boom");
-                        var copyText = document.getElementById(
-                          "sharefilelinkswaltectinput"
-                        );
-
-                        /* Select the text field */
-                        copyText.select();
-                        copyText.setSelectionRange(
-                          0,
-                          99999
-                        ); /*For mobile devices*/
-
-                        /* Copy the text inside the text field */
-                        document.execCommand("copy");
-                      });
-                    }
-                  });
-                }}
-              >
-                Share
-              </button>
-              <button
-                disabled={this.state.imdbcode.length > 0 ? false : true}
-                className="btn btn-warning clearbutton"
-                onClick={() => {
-                  Swal.fire({
-                    title: "Are you sure?",
-                    text: "You won't be able to revert this!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Yes, Clear this list!",
-                  }).then((result) => {
-                    if (result.value) {
-                      this.setState({ imdbcode: [], movies: [] });
-                      Swal.fire(
-                        "Donezo !",
-                        "Your list is invisible now 😋",
-                        "success"
-                      );
-                    }
-                  });
-                }}
-              >
-                Clear list
-              </button>
-              <div className="container cardcontainer">
-                {this.state.movies.map((ele) => {
-                  return (
-                    <Card data={ele} removemovieaction={this.removemovie} />
-                  );
-                })}
-              </div>
-            </>
-          )}
+          </>
         </div>
       </>
     );

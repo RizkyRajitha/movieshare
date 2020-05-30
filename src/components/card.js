@@ -3,7 +3,7 @@ import "./card.css";
 import Swal from "sweetalert2";
 
 const Card = (props) => {
-  console.log(props);
+  // console.log(props);
   return (
     <div>
       <div className="card mb-3">
@@ -53,7 +53,7 @@ const Card = (props) => {
                 }).then((result) => {
                   if (result.value) {
                     // this.setState({ imdbcode: [], movies: [] });
-                    props.removemovieaction(props.data.imdbID);
+                    props.removemovieaction(props.data.id);
                     Swal.fire(
                       "Donezo !",
                       "That wont't bother you anymore 😉",
@@ -68,7 +68,7 @@ const Card = (props) => {
             <a
               rel="noopener noreferrer"
               target="_blank"
-              href={`https://www.imdb.com/title/${props.data.imdbID}`}
+              href={`${props.data.imdbID}`}
               class="btn btn-primary imdbatag"
             >
               IMDB

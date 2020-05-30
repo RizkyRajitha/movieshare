@@ -1,0 +1,4 @@
+[build]
+  functions = "lambda"
+  command = "yarn build" # the command you run to build this file
+  publish = "build" 
