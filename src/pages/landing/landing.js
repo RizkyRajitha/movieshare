@@ -9,7 +9,7 @@ import Card from "../../components/card";
 import Axios from "axios";
 // import Swal from "sweetalert2";
 
-const api = "https://imdbmovieapp-e7c00.web.app/";
+const api = "https://movieshare.netlify.app/";
 
 // const API = "http://localhost:9000";
 
