@@ -21,6 +21,10 @@
   flex-grow: 8;
 }
 
+.loadingtext{
+  text-align: center;
+}
+
 .customemenuitem2 {
   /* padding-left: 10%; */
   padding-right: 10%;
