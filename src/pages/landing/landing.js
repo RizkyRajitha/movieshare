@@ -9,11 +9,14 @@ import Card from "../../components/card";
 import Axios from "axios";
 // import Swal from "sweetalert2";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const api = "https://movieshare.netlify.app/";
 
-// const API = "http://localhost:9000";
+const API = "http://localhost:9000";
 
-const API = "https://movieshare.netlify.app/.netlify/functions";
+// const API = "https://movieshare.netlify.app/.netlify/functions";
 
 // const API = 'http://localhost:9000/getmovielist'
 
@@ -142,6 +145,16 @@ class Movie extends React.Component {
       if (eleid === selectedOption.value) {
         console.log("duplicates");
         dups = false;
+        // toast("");
+        toast.info("This movie is already in the list", {
+          position: "bottom-left",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         break;
       }
     }
@@ -178,8 +191,8 @@ class Movie extends React.Component {
 
           Axios.post(`${API}/addnewmovie`, payload, config)
             .then((result) => {
-              console.log("new movie ****************************************");
-              console.log(result.data);
+              // console.log("new movie ****************************************");
+              // console.log(result.data);
 
               var temp = {
                 id: result.data.data[0].id,
@@ -193,8 +206,18 @@ class Movie extends React.Component {
                 Director: result.data.data[0].fields.Directed_by,
                 imdbID: result.data.data[0].fields.imdb_link,
               };
-
+              toast.success("Movie added successfully", {
+                position: "bottom-left",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+              });
               this.setState((pre) => {
+                // toast("Movie added successfully");
+
                 return {
                   movies: [temp, ...pre.movies],
                 };
@@ -279,6 +302,17 @@ class Movie extends React.Component {
           this.setState((pre) => {
             var newmoveis = [...pre.movies];
             newmoveis.splice(itemindex, 1);
+            // toast("Movie removed");
+
+            toast.success("Movie added successfully", {
+              position: "bottom-left",
+              autoClose: 2000,
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
 
             return {
               movies: newmoveis,
@@ -319,7 +353,20 @@ class Movie extends React.Component {
             />
           </a>
         </nav>
-
+        <div>
+          <ToastContainer
+            position="bottom-left"
+            autoClose={4000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick={false}
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            // bodyStyle={{ backgroundColor: "#5bcd04" , colo}}
+          />
+        </div>
         <div className="container">
           <div className="text-center titlediv">
             <h2 className="center">{/* Share your favourite movies  */}</h2>

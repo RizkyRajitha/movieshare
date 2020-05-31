@@ -7,8 +7,8 @@ exports.handler = async (event, context) => {
   //   const token = event.headers.Authorization;
 
   return {
-    statusCode: 200,
-    body: JSON.stringify({ token: jwt.sign({ name: "rizky" }, JWTSEACRET) }),
+    statusCode: 500,
+    body: JSON.stringify({ token: "err" }),
   };
 
   //   console.log();
