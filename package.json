@@ -9,7 +9,7 @@
     "axios": "^0.19.2",
     "encoding": "^0.1.12",
     "firebase": "^7.14.1",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.15",
     "netlify-lambda": "^1.6.3",
     "node-fetch": "^2.6.0",
